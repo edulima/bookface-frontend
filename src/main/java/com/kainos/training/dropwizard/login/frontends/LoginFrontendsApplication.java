@@ -7,6 +7,7 @@ import com.kainos.training.dropwizard.login.frontends.resources.ViewsResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.*;
 import io.dropwizard.views.ViewBundle;
+import com.kainos.training.jersey.client.LoginClient;
 
 public class LoginFrontendsApplication extends Application<LoginFrontendsConfiguration> {
 
@@ -27,7 +28,9 @@ public class LoginFrontendsApplication extends Application<LoginFrontendsConfigu
 	@Override
 	public void run(LoginFrontendsConfiguration configuration, Environment environment)
 			throws Exception {
-		final ViewsResource viewsResource = new ViewsResource();
+		
+		LoginClient loginClient = new LoginClient();
+		final ViewsResource viewsResource = new ViewsResource(loginClient);
 		environment.jersey().register(viewsResource);
 	}
 
