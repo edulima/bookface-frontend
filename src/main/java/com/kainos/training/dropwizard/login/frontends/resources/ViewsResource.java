@@ -27,9 +27,11 @@ import ch.qos.logback.classic.Logger;
 @Path("/test")
 public class ViewsResource {
 	LoginClient loginClient;
+	FriendClient friendClient;
 	
-	public ViewsResource(LoginClient client) {
+	public ViewsResource(LoginClient client, FriendClient friend) {
 		this.loginClient = client;
+		this.friendClient = friend;
 	}
 
 	@GET
@@ -49,11 +51,8 @@ public class ViewsResource {
 		int status = loginClient.getLoginString(username, password);
 	
 		if(status == 204) {
-			
 			return Response.seeOther(URI.create("test/loginSuccess")).build();
-			
 		}else{
-		
 			return Response.seeOther(URI.create("test/loginFailed")).build();
 		}
 	}
@@ -71,7 +70,7 @@ public class ViewsResource {
 	@Path("/loginSuccess")
 	@Produces(MediaType.TEXT_HTML)	
 	public View loginSuccess() {
-		return new LoginSuccessView();
+		return new LoginSuccessView(friendClient);
 	}
 	
 	@POST
@@ -80,19 +79,21 @@ public class ViewsResource {
 	@Produces(MediaType.TEXT_HTML)
 	public Response addFriend(@FormParam("friendName") String friendName){
 
+		// make bob
 		Person newFriend = new Person();
 		newFriend.setName(friendName);
 		
-		FriendClient friendClient = new FriendClient();
-		
-		int status = friendClient.addFriend(newFriend).getStatus();
+		// make our request
+		System.out.println("friendClient>>>>>>>" + friendClient);
+		Response response = friendClient.addFriend(newFriend);
+		System.out.println(">>>>>>response:" + response);
+		int status = response.getStatus();
 	
+		// react to response
 		if(status == 200) {
 			// FRIEND IS IN!
 			System.out.println("friend added");
 			return Response.seeOther(URI.create("test/loginSuccess")).build();
-			
-			
 		}else{
 			// FRIEND FAILEDDD
 			System.out.println("friend not added");
@@ -106,16 +107,12 @@ public class ViewsResource {
 	@Produces(MediaType.TEXT_HTML)
 	public Response deleteFriend(@PathParam("id") int idToDelete){
 
-		FriendClient friendClient = new FriendClient();
-		
 		int status = friendClient.deleteFriend(idToDelete).getStatus();
 	
 		if(status == 200) {
 			// FRIEND IS IN!
 			System.out.println("friend deleted");
 			return Response.seeOther(URI.create("test/loginSuccess")).build();
-			
-			
 		}else{
 			// FRIEND FAILEDDD
 			System.out.println("friend not deleted");

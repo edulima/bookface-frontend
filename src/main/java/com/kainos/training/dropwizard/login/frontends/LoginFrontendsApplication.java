@@ -1,6 +1,7 @@
 package com.kainos.training.dropwizard.login.frontends;
 
 import com.google.common.collect.ImmutableMap;
+import com.kainos.training.blackbox.client.FriendClient;
 import com.kainos.training.dropwizard.login.frontends.config.LoginFrontendsConfiguration;
 import com.kainos.training.dropwizard.login.frontends.resources.ViewsResource;
 
@@ -30,7 +31,8 @@ public class LoginFrontendsApplication extends Application<LoginFrontendsConfigu
 			throws Exception {
 		
 		LoginClient loginClient = new LoginClient();
-		final ViewsResource viewsResource = new ViewsResource(loginClient);
+		FriendClient friendClient = new FriendClient();
+		final ViewsResource viewsResource = new ViewsResource(loginClient, friendClient);
 		environment.jersey().register(viewsResource);
 	}
 

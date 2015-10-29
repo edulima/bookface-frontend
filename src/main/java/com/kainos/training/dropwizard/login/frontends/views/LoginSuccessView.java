@@ -11,11 +11,9 @@ public class LoginSuccessView extends View {
     private final List<Person> friends;
     FriendClient friendClient; 
 	
-	public LoginSuccessView(){
+	public LoginSuccessView(FriendClient friendClient){
 		super("/login_success.ftl");
-        friendClient = new FriendClient();
         this.friends = friendClient.getFriend();
-        System.out.println(this.friends.get(0).getName());
 	}
 	
 	public List<Person> getFriends() {
